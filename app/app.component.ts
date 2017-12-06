@@ -1,69 +1,37 @@
 import { Component } from '@angular/core';
+import { Keg } from './keg.model';
 
 @Component({
   selector: 'app-root',
   template: `
     <div class="container">
       <h1>Tap Room</h1>
-      <form>
-        Name:
-        <input type="text" #name><br>
-        Brand:
-        <input type="text" #brand><br>
-        Price:
-        <input type="text" #price><br>
-        Alcohol Content:
-        <input type="text" #alcoholContent><br>
-        <button (click) = "appendNewItems(name.value, brand.value, price.value, alcoholContent.value)">Add</button>
-      </form>
+      <new-keg [childNewKeg]="masterKegs" (newSender)="appendNewItems($event)"></new-keg>
 
-      <ul>
-      <li *ngFor="let currentItem of kegs" >
-      Name: {{currentItem.name}} | Brand: {{currentItem.brand}} |
-      <!--here is some comment-->
-                    <span *ngIf="currentItem.price <= 5" style="color:blue;">Price: $ {{currentItem.price}}</span>
-                    <span *ngIf="currentItem.price > 5">Price: $ {{currentItem.price}}</span>
-       | Alcohol Content: {{currentItem.alcoholContent}}<span *ngIf="currentItem.alcoholContent > 5">(Strong Beer)</span> | Pints: {{currentItem.pints}} <span *ngIf="currentItem.pints < 10">ALERT!!!</span><button (click)="editKeg(currentItem)">Edit!</button><button (click)="updateKegPints(currentItem)">sell!</button>
+      <keg-list [childKegList]="masterKegs" (clickSender)="editKeg($event)" (sellSender)="updateKegPints($event)"></keg-list>
+      <edit-keg [childSelectedKeg] = "selectedKeg" (doneButtonClickedSender)="finishedEditing()"></edit-keg>
 
-      </li>
 
-      </ul>
-      <div *ngIf="selectedKeg">
-      <h3>{{selectedKeg.name}}</h3>
-      <h3>{{selectedKeg.brand}}</h3>
-      <h3>{{selectedKeg.price}}</h3>
-      <h3>{{selectedKeg.alcoholContent}}</h3>
-      <h3>Edit Keg</h3>
-      Edit Name:
-      <input type="text" #name><br>
-      Edit Brand:
-      <input type="text" #brand><br>
-      Edit Price:
-      <input type="text" #price><br>
-      Edit Alcohol Content:
-      <input type="text" #alcoholContent><br>
-
-      <button (click) = "finishedEditing(name.value, brand.value, price.value, alcoholContent.value)">Done</button>
-  </div>
 
     </div>
   `
 })
 
 export class AppComponent {
-  kegs: Keg[] = [
-    new Keg('Guinness Draught', 'Guinness', 10, 4.2),
-    new Keg('Guinness Nitro IPA', 'Guinness', 4, 5.8),
-    new Keg('Guinness Extra Stout', 'Guinness', 8, 5.6)
-  ]
+
+    masterKegs: Keg[] = [
+      new Keg('Guinness Draught', 'Guinness', 10, 4.2),
+      new Keg('Guinness Nitro IPA', 'Guinness', 4, 5.8),
+      new Keg('Guinness Extra Stout', 'Guinness', 8, 5.6)
+    ];
   selectedKeg = null;
 
-  appendNewItems = function(name: string, brand: string, price: number, alcoholContent: number){
-    this.kegs.push(new Keg(name, brand, price, alcoholContent));
+  appendNewItems(newKeg: Keg){
+    this.masterKegs.push(newKeg);
   }
 
-  editKeg(currentItem) {
-   this.selectedKeg = currentItem;
+  editKeg(clickedKeg) {
+   this.selectedKeg = clickedKeg;
 }
 
   finishedEditing(name, brand, price, alcoholContent) {
@@ -77,11 +45,5 @@ export class AppComponent {
 updateKegPints(currentItem){
   currentItem.pints -= 1;
 }
-
-}
-
-export class Keg {
-  public pints: number = 124;
-  constructor(public name: string, public brand: string, public price: number, public alcoholContent: number){ }
 
 }
