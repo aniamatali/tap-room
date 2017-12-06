@@ -9,7 +9,7 @@ import { Keg } from './keg.model';
       <new-keg [childNewKeg]="masterKegs" (newSender)="appendNewItems($event)"></new-keg>
 
       <keg-list [childKegList]="masterKegs" (clickSender)="editKeg($event)" (sellSender)="updateKegPints($event)"></keg-list>
-      <edit-keg [childSelectedKeg] = "selectedKeg" (doneButtonClickedSender)="finishedEditing()"></edit-keg>
+      <edit-keg [childSelectedKeg] = "selectedKeg" (doneButtonClickedSender)="finishedEditing($event)"></edit-keg>
 
 
 
@@ -34,11 +34,11 @@ export class AppComponent {
    this.selectedKeg = clickedKeg;
 }
 
-  finishedEditing(name, brand, price, alcoholContent) {
-  this.selectedKeg.name = name;
-  this.selectedKeg.brand = brand;
-  this.selectedKeg.price = price;
-  this.selectedKeg.alcoholContent = alcoholContent;
+  finishedEditing(result) {
+  this.selectedKeg.name = result[0];
+  this.selectedKeg.brand = result[1];
+  this.selectedKeg.price = result[2];
+  this.selectedKeg.alcoholContent = result[3];
   this.selectedKeg = null;
 }
 
